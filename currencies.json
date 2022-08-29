@@ -1,0 +1,29 @@
+{
+    "currencies": [
+        {
+            "currency": "EUR",
+            "rate": 1.0,
+            "symbol": "\u20ac"
+        },
+        {
+            "currency": "USD",
+            "rate": 1.0,
+            "symbol": "$"
+        },
+        {
+            "currency": "GBP",
+            "rate": 0.85,
+            "symbol": "\u00a3"
+        },
+        {
+            "currency": "AUD",
+            "rate": 1.45,
+            "symbol": "$"
+        },
+        {
+            "currency": "JPY",
+            "rate": 137.05,
+            "symbol": "\u00a5"
+        }
+    ]
+}
