@@ -54,14 +54,24 @@ class ShoppingCart(abc.ShoppingCart):
        """
         
         lines = []
+        
+        total_price = 0.0
 
         for item in self._items.items():
             
             price = self._get_product_price(item[0]) * item[1]
 
             price_string = "€%.2f" % price
+            
+            # updating total price of items by iterating through a list of items
+            total_price = total_price + float(price)
 
             lines.append(item[0] + " - " + str(item[1]) + ' - ' + price_string)
+            
+        total_price = "€%.2f" % total_price
+        
+        # adding 'Total' to the receipt
+        lines.append('Total: '+total_price)
 
         return lines
     
@@ -111,13 +121,13 @@ def main():
         
     cart = ShoppingCart()
     
-    cart.add_item("apple", 1)
+    cart.add_item("apple", 3)
     
-    cart.add_item("banana", 1)
+    cart.add_item("banana", 6)
     
     cart.add_item("grapes", 1)
     
-    cart.add_item("strawberry", 1)
+    cart.add_item("strawberry", 2)
     
     cart.add_item("kiwi", 1)
     
