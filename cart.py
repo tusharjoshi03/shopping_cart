@@ -1,9 +1,6 @@
 import typing
 import json
 import abc_class as abc # Renamed abc.py to abc_class.py as 'abc' is a python module for defining abstract base class
-import requests
-from datetime import date
-from currency_symbols import CurrencySymbols
 
 class ShoppingCart(abc.ShoppingCart):
     
@@ -11,11 +8,12 @@ class ShoppingCart(abc.ShoppingCart):
     shopping cart class that initialises items to be added to the cart, loads the price list for all items and conversion
     rates for seevral currencies
     
+    _items(dict): dictionary that stores product codes and respective quantities of the product 
     price_list(list): list that stores prices for all products
     currency_list(list): list that stores converison rates for different currencies
     currecny(str): currency selected by the user for transaction
     '''
-    
+
     def __init__(self):
         
         self._items = dict()
@@ -28,6 +26,13 @@ class ShoppingCart(abc.ShoppingCart):
             prices_data = json.load(json_file)
         
         self.price_list = prices_data['products']
+        
+        # load JSON file with currency conversion rates
+        with open('currencies.json') as json_file:
+            
+            currency_data = json.load(json_file)
+        
+        self.currency_list = currency_data['currencies']
 
     def add_item(self, product_code: str, quantity: int):
         
@@ -95,62 +100,6 @@ class ShoppingCart(abc.ShoppingCart):
             
         return currency
     
-    def get_conversion_rate(self,transaction_currency):
-    
-        """gets the converison rate for the specified currency considering 'Euro' as the base currency
-
-            Parameters:
-            transaction_currency(str): currency selected by the user for a particular transaction
-
-            Returns:
-            conversion rate value as a float number from 'Euro' to the specified currency
-
-           """
-        
-        # get today's date in yyyy-mm-dd
-        today = date.today()
-        current_date = today.strftime("%Y-%m-%d")
-
-        # base currency or reference currency
-        base="EUR"
-
-        # conversion rates from a date
-        start_date=current_date
-
-        # conversion rates till a date
-        end_date=current_date
-
-        # api url for request 
-        url = 'https://api.exchangerate.host/timeseries?base={0}&start_date={1}&end_date={2}&symbols={3}'
-        
-        send_request = url.format(base,start_date,end_date,transaction_currency)
-    
-        response = requests.get(send_request)
-
-        # retrive response in json format
-        data = response.json()
-
-        conversion_rate = round((data['rates'][current_date][transaction_currency]),2)
-    
-        return conversion_rate
-    
-    def get_currency_symbol(self,transaction_currecny):
-        
-        """gets the symbol for the specified currency
-
-            Parameters:
-            transaction_currency(str): currency selected by the user for a particular transaction
-
-            Returns:
-            currency symbol as a string for the specified currency
-
-           """
-        
-        currency_symbol = CurrencySymbols.get_symbol(transaction_currecny)
-        
-        return currency_symbol
-    
-    
     def print_receipt(self) -> typing.List[str]:
         
         """lists and prints all the items in the shopping cart along with the total price for the transaction
@@ -173,9 +122,7 @@ class ShoppingCart(abc.ShoppingCart):
         # print items in receipt in the same order that they are added to the shopping cart
         for item in self._items.items():
             
-            symbol = self.get_currency_symbol(self.currency)
-            
-            price = self._get_product_price(item[0],self.price_list,self.currency)
+            symbol, price = self._get_product_price(item[0],self.price_list,self.currency_list,self.currency)
             
             price = price * item[1]
             
@@ -193,7 +140,7 @@ class ShoppingCart(abc.ShoppingCart):
 
         return lines
     
-    def _get_product_price(self, product_code: str, price_list: list, receipt_currency: str) -> float:
+    def _get_product_price(self, product_code: str, price_list: list, currency_list: list, receipt_currency: str) -> float:
         
         """Gets price for a product by referring to an external data source - JSON data file in this case
 
@@ -218,15 +165,24 @@ class ShoppingCart(abc.ShoppingCart):
             if(price_list[i]['product_code'] == product_code):
                 
                 price = price_list[i]['price']
+                
+                currency_symbol = '€'
         
         # when the currency is not Euro
         if(receipt_currency != default_currency):
             
-            conversion_rate = self.get_conversion_rate(receipt_currency)
+            # fetching currency conversion rate from external JSON file
+            for i in range(len(currency_list)):
+                
+                if(currency_list[i]['currency'] == receipt_currency):
+                    
+                    conversion_rate = currency_list[i]['rate']
+                    
+                    currency_symbol = currency_list[i]['symbol']
             
             price = price * conversion_rate
         
-        return price
+        return currency_symbol, price
   
 def main():
     
