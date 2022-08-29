@@ -13,9 +13,18 @@ class ShoppingCart(abc.ShoppingCart):
     currecny(str): currency selected by the user for transaction
     '''
     
+    global price_list
+    
     def __init__(self):
         
         self._items = dict()
+        
+        # load JSON file with product prices
+        with open('products.json') as json_file:
+            
+            prices_data = json.load(json_file)
+            
+        self.price_list = prices_data['products']
 
     def add_item(self, product_code: str, quantity: int):
         
@@ -59,7 +68,7 @@ class ShoppingCart(abc.ShoppingCart):
 
         for item in self._items.items():
             
-            price = self._get_product_price(item[0]) * item[1]
+            price = self._get_product_price(item[0],self.price_list) * item[1]
 
             price_string = "€%.2f" % price
             
@@ -75,12 +84,13 @@ class ShoppingCart(abc.ShoppingCart):
 
         return lines
     
-    def _get_product_price(self, product_code: str) -> float:
+    def _get_product_price(self, product_code: str, price_list: list) -> float:
         
-        """Gets price for a product based on product code
+        """Gets price for a product by referring to an external data source - JSON data file in this case
 
         Parameters:
         product_code (str): name of the product to be added to the cart
+        price_list (list): list of products with their respective prices in JSON format
 
         Returns:
         a float value for the product
@@ -89,21 +99,13 @@ class ShoppingCart(abc.ShoppingCart):
         
         price = 0.0
 
-        if product_code == 'apple':
-            price = 1.0
-
-        elif product_code == 'banana':
-            price = 1.1
-
-        elif product_code == 'kiwi':
-            price = 3.0
+        # fetching product prices from external JSON file
+        for i in range(len(price_list)):
             
-        elif product_code == 'grapes':
-            price = 2.0
-            
-        elif product_code == 'strawberry':
-            price = 3.5
-
+            if(price_list[i]['product_code'] == product_code):
+                
+                price = price_list[i]['price']
+        
         return price
 
 def main():
