@@ -13,8 +13,6 @@ class ShoppingCart(abc.ShoppingCart):
     currecny(str): currency selected by the user for transaction
     '''
     
-    global price_list
-    
     def __init__(self):
         
         self._items = dict()
