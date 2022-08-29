@@ -41,3 +41,5 @@ Contains symbols and conversion rates for different currencies considering 'Euro
 4. Run 'python3 test_cart.py' to execute 'test_cart.py' to run test cases that are defined in the script.
 5. To add more items or change product prices, the file 'products.json' can be updated as per requirement.
 6. To add more currencies or change conversion rates, the file 'currencies.json' can be updated as per requirement.
+
+Note: Python version used for implementation and testing was 3.6.5
