@@ -1,0 +1,24 @@
+{
+    "products": [
+        {
+            "product_code": "apple",
+            "price": 1.0
+        },
+        {
+            "product_code": "banana",
+            "price": 1.1
+        },
+        {
+            "product_code": "kiwi",
+            "price": 3.0
+        },
+        {
+            "product_code": "grapes",
+            "price": 2.0
+        },
+        {
+            "product_code": "strawberry",
+            "price": 3.5
+        }
+    ]
+}
