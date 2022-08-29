@@ -1,5 +1,5 @@
 # shopping_cart
-Add items to the shopping cart and generate a receipt with total price of all items in the selected currency
+Generate a receipt of items added to the shopping cart and include total price of all items in the selected currency
 
 This shopping till system project provides functionality to add different items to shopping cart, display their quantities and prices, display all items and their total price on receipt and select differet currencies for a transaction. Overview pf the steps followed to implement this project are described below:
 
